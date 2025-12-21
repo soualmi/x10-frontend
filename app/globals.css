@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: 15 23 42;
+  --bg-subtle: 30 41 59;
+  --fg: 248 250 252;
+  --muted: 148 163 184;
+  --card: 30 41 59;
+  --card-border: 51 65 85;
+  --primary: 74 95 115;
+  --accent: 212 165 116;
+  --success: 34 197 94;
+  --warning: 251 191 36;
+  --danger: 239 68 68;
+}
+
+html, body { 
+  height: 100%; 
+  background: rgb(var(--bg));
+  color: rgb(var(--fg));
+}
+
+* { 
+  border-color: rgb(var(--card-border)); 
+}
