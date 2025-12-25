@@ -385,9 +385,8 @@ export default function ProductsClient() {
         if (goal === "Lancer maintenant") return p.decision === "LANCER" ? 100 : p.decision === "TESTER" ? 40 : -10;
         if (goal === "Tester") return p.decision === "TESTER" ? 100 : p.decision === "LANCER" ? 60 : 0;
         // Éviter les saturés
-        return (
-100 - p.saturation) + (100 - p.competition);
-      };
+          return (100 - p.saturation) + (100 - p.competition);
+        };
 
       // budget (on privilégie juste le ticket “produit”, pas le spend pub)
       const budgetBoost = (p: ProductWithOracle) => {
