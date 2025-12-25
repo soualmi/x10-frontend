@@ -525,14 +525,47 @@ export default function SignalsPage() {
         animate="show"
         variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.04 } } }}
       >
-        {filtered.map((s) => (
-          <motion.div
-            key={s.id}
-            variants={{ hidden: { opacity: 0, y: 8 }, show: { opacity: 1, y: 0, transition: { duration: 0.2, ease: [0.16, 1, 0.3, 1] } } }}
-          >
-            <SignalCard s={s} />
-          </motion.div>
-        ))}
+        {filtered.length === 0 ? (
+          <Glass className="p-6 sm:col-span-2 lg:col-span-3 xl:col-span-4">
+            <div className="text-sm font-semibold text-[#EAF0FF]">
+              Aucun signal ne correspond à ces filtres
+            </div>
+            <div className="mt-1 text-sm text-[#A7B3C7]">
+              Essaie d’élargir la plateforme, la niche, le niveau, ou de vider la recherche.
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button
+                onClick={() => {
+                  setPlateforme("Toutes");
+                  setNiche("Toutes");
+                  setNiveau("Tous");
+                  setQ("");
+                }}
+                className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-[#EAF0FF] transition hover:bg-white/8"
+              >
+                Réinitialiser les filtres
+              </button>
+              <button
+                onClick={lancerScan}
+                className="rounded-xl border border-white/10 bg-[#6D5EF6] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#7E71FF]"
+              >
+                🔎 Lancer un scan
+              </button>
+            </div>
+          </Glass>
+        ) : (
+          filtered.map((s) => (
+            <motion.div
+              key={s.id}
+              variants={{
+                hidden: { opacity: 0, y: 8 },
+                show: { opacity: 1, y: 0, transition: { duration: 0.2, ease: [0.16, 1, 0.3, 1] } },
+              }}
+            >
+              <SignalCard s={s} />
+            </motion.div>
+          ))
+        )}
       </motion.div>
 
       <AnimatePresence>
