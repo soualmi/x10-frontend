@@ -1,3 +1,7 @@
-export function cn(...classes: (string | undefined | null | false)[]) {
-  return classes.filter(Boolean).join(" ");
+export function cn(...inputs: (string | undefined | null | boolean)[]): string {
+  return inputs
+    .filter(Boolean)
+    .join(' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 }

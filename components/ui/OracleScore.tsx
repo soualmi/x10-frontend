@@ -4,7 +4,7 @@ interface OracleScoreProps {
   confidence?: "high" | "medium" | "low";
 }
 
-export function OracleScore({ score, size = "md", confidence }: OracleScoreProps) {
+export default function OracleScore({ score, size = "md", confidence }: OracleScoreProps) {
   const sizes = {
     sm: "text-xl",
     md: "text-3xl",

@@ -7,7 +7,7 @@ interface SectionHeaderProps {
   action?: ReactNode;
 }
 
-export function SectionHeader({ icon, title, subtitle, action }: SectionHeaderProps) {
+export default function SectionHeader({ icon, title, subtitle, action }: SectionHeaderProps) {
   return (
     <div className="flex items-start justify-between">
       <div className="flex items-center gap-3">

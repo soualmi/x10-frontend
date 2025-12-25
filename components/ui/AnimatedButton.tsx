@@ -10,7 +10,7 @@ interface AnimatedButtonProps {
   className?: string;
 }
 
-export function AnimatedButton({ children, variant = "default", size = "md", onClick, className = "" }: AnimatedButtonProps) {
+export default function AnimatedButton({ children, variant = "default", size = "md", onClick, className = "" }: AnimatedButtonProps) {
   const variants = {
     default: "bg-[rgba(74,95,115,0.1)] text-[rgb(203,213,225)] border border-[rgba(74,95,115,0.2)]",
     primary: "bg-gradient-to-r from-[rgb(74,95,115)] to-[rgb(96,125,149)] text-white shadow-lg",

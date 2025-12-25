@@ -7,7 +7,7 @@ interface CardProps {
   className?: string;
 }
 
-export function Card({ children, variant = "default", hover = false, className = "" }: CardProps) {
+export default function Card({ children, variant = "default", hover = false, className = "" }: CardProps) {
   const baseStyles = "rounded-xl border p-6 transition-all duration-300";
   
   const variants = {

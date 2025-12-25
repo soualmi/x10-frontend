@@ -10,7 +10,7 @@ interface AnimatedCardProps {
   className?: string;
 }
 
-export function AnimatedCard({ children, variant = "default", hover = true, delay = 0, className = "" }: AnimatedCardProps) {
+export default function AnimatedCard({ children, variant = "default", hover = true, delay = 0, className = "" }: AnimatedCardProps) {
   const variants = {
     default: "bg-[rgb(30,41,59)] border-[rgb(51,65,85)]",
     gradient: "bg-gradient-to-br from-[rgb(30,41,59)] to-[rgb(15,23,42)] border-[rgb(51,65,85)]",

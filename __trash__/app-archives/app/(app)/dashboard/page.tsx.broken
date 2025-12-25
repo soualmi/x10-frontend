@@ -1,0 +1,152 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { apiClient } from '@/lib/api';
+import type { ApiStats, ProductRaw } from '@/lib/api';
+
+export default function DashboardPage() {
+  const [stats, setStats] = useState<ApiStats | null>(null);
+  const [topProducts, setTopProducts] = useState<ProductRaw[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        setLoading(true);
+        setError(false);
+        const [statsData, productsData] = await Promise.all([
+          apiClient.getStats(),
+          apiClient.getProducts({ limit: 3, min_score: 55 }),
+        ]);
+        setStats(statsData);
+        setTopProducts(productsData);
+      } catch (err) {
+        console.error('Erreur fetch dashboard:', err);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <div className="p-6 text-white text-center">Chargement Oracle...</div>;
+  if (error || !stats) return <div className="p-6 text-red-400 text-center">Erreur Oracle</div>;
+
+  const marketStatus = getMarketStatus(stats);
+
+  return (
+    <div className="space-y-8 p-6 max-w-7xl mx-auto">
+      {/* SECTION 3: Lesquelles meritent mon attention ? */}
+      <section className="space-y-4">
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold text-slate-50 mb-2">Lesquelles meritent mon attention ?</h2>
+          <p className="text-slate-400">Priorisation basee sur les signaux du marche</p>
+        </div>
+
+        {stats.high_potential === 0 ? (
+          <div className="bg-slate-800 p-6 rounded border">
+            <div className="text-center space-y-2">
+              <p className="text-slate-400">
+                Aucune opportunite prioritaire detectee actuellement.
+              </p>
+              <p className="text-sm text-slate-500">
+                Oracle surveille le marche en continu. Les signaux emergents apparaitront ici.
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-slate-800 p-6 rounded border space-y-4">
+            <div className="flex items-start gap-4">
+              <div className="flex-shrink-0 w-12 h-12 rounded-full bg-orange-500/20 flex items-center justify-center">
+                <span className="text-2xl">⚡</span>
+              </div>
+              <div className="space-y-2">
+                <h3 className="text-lg font-semibold text-slate-50">
+                  {stats.high_potential} opportunite{stats.high_potential > 1 ? 's' : ''} prioritaire{stats.high_potential > 1 ? 's' : ''}
+                </h3>
+                <p className="text-slate-400 leading-relaxed">
+                  Le timing actuel est particulierement interessant pour ces produits. 
+                  Les signaux indiquent une fenetre de decision favorable.
+                </p>
+                
+          </div>
+        )}
+      </section>
+
+      {/* SECTION 4: Que dois-je faire maintenant ? */}
+      <section className="space-y-4">
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold text-slate-50 mb-2">Que dois-je faire maintenant ?</h2>
+          <p className="text-slate-400">Actions recommandees</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-slate-800 p-6 rounded border space-y-3 hover:border-blue-500/50 transition-all cursor-pointer group">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center group-hover:bg-blue-500/30 transition-colors">
+                  <span className="text-xl">🎯</span>
+                </div>
+                <h3 className="text-lg font-semibold text-slate-50">
+                  Explorer les opportunites
+                </h3>
+              </div>
+              <p className="text-slate-400 text-sm leading-relaxed">
+                Analysez les produits detectes et identifiez les fenetres de decision ouvertes.
+              </p>
+            </a>
+          </div>
+
+          <div className="bg-slate-800 p-6 rounded border space-y-3 hover:border-blue-500/50 transition-all cursor-pointer group">
+            <a href="/products" className="block">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center group-hover:bg-blue-500/30 transition-colors">
+                  <span className="text-xl">🔍</span>
+                </div>
+                <h3 className="text-lg font-semibold text-slate-50">
+                  Rechercher des produits
+                </h3>
+              </div>
+              <p className="text-slate-400 text-sm leading-relaxed">
+                Filtrez et comparez les produits selon vos criteres specifiques.
+              </p>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer signature Oracle */}
+      <div className="text-center pt-8 pb-4 border-t border-slate-800">
+        <p className="text-sm text-slate-500 italic">
+          Oracle ne montre pas ce qui marche. Il montre ce qui va marcher.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function formatNumber(num: number): string {
+  if (num >= 1_000_000) return `${(num / 1_000_000).toFixed(1)}M`;
+  if (num >= 1_000) return `${(num / 1_000).toFixed(1)}K`;
+  return num.toString();
+}
+
+function getMarketStatus(stats: ApiStats): { title: string; description: string; } {
+  const rate = stats.total_products > 0 ? (stats.high_potential / stats.total_products) * 100 : 0;
+  
+  if (stats.high_potential === 0) return { 
+    title: 'Marche en observation', 
+    description: 'Aucun signal prioritaire detecte actuellement. Oracle continue l analyse en continu. Les opportunites emergentes apparaitront des leur detection.'
+  };
+  
+  if (rate >= 20) return { 
+    title: 'Dynamique favorable', 
+    description: 'Plusieurs opportunites emergent simultanement. Le marche presente des fenetres de decision interessantes. Analysez les signaux pour identifier les priorites.'
+  };
+  
+  return { 
+    title: 'Opportunites selectives', 
+    description: 'Quelques signaux interessants detectes. Le marche reste selectif. Concentrez-vous sur les opportunites a fort potentiel.'
+  };
+}

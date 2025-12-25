@@ -9,7 +9,7 @@ interface KpiCardProps {
   className?: string;
 }
 
-export function KpiCard({ label, value, icon, color = "#d4a574", trend, className = "" }: KpiCardProps) {
+export default function KpiCard({ label, value, icon, color = "#d4a574", trend, className = "" }: KpiCardProps) {
   return (
     <div 
       className={`rounded-xl border p-4 transition-all duration-300 hover:-translate-y-1 ${className}`}

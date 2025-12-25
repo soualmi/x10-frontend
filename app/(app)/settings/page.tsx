@@ -1,0 +1,110 @@
+"use client";
+import { useState } from 'react';
+
+export default function SettingsPage() {
+  const [hotThreshold, setHotThreshold] = useState(75);
+  const [watchThreshold, setWatchThreshold] = useState(50);
+
+  return (
+    <div className="min-h-screen bg-slate-900 p-6">
+      <h1 className="text-2xl font-bold text-white mb-8">Paramètres Oracle</h1>
+      
+      {/* Seuils de détection */}
+      <div className="bg-slate-800 rounded-lg p-6 mb-6">
+        <h2 className="text-xl font-semibold text-white mb-4">Seuils de Détection</h2>
+        
+        <div className="space-y-6">
+          <div>
+            <label className="text-slate-300 text-sm font-medium">Seuil HOT</label>
+            <div className="mt-2">
+              <input 
+                type="range" 
+                min="60" 
+                max="90" 
+                value={hotThreshold} 
+                onChange={(e) => setHotThreshold(Number(e.target.value))}
+                className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer"
+              />
+              <div className="flex justify-between text-xs text-slate-400 mt-1">
+                <span>60</span>
+                <span className="text-red-400 font-semibold">{hotThreshold}</span>
+                <span>90</span>
+              </div>
+            </div>
+          </div>
+          
+          <div>
+            <label className="text-slate-300 text-sm font-medium">Seuil WATCH</label>
+            <div className="mt-2">
+              <input 
+                type="range" 
+                min="30" 
+                max="70" 
+                value={watchThreshold} 
+                onChange={(e) => setWatchThreshold(Number(e.target.value))}
+                className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer"
+              />
+              <div className="flex justify-between text-xs text-slate-400 mt-1">
+                <span>30</span>
+                <span className="text-amber-400 font-semibold">{watchThreshold}</span>
+                <span>70</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Analyse avancée (métadonnées secrètes) - UNE SEULE FOIS */}
+      <div className="bg-slate-800 rounded-lg p-6">
+        <h2 className="text-xl font-semibold text-white mb-4">Analyse Avancée</h2>
+        <p className="text-slate-400 text-sm mb-4">Paramètres de détection précoce pour l'avantage concurrentiel</p>
+        
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-slate-900 rounded p-4">
+            <div className="text-slate-300 text-sm font-medium mb-2">Friction</div>
+            <div className="text-slate-400 text-xs">Points de résistance détectés</div>
+            <div className="mt-2">
+              <div className="w-full bg-slate-700 rounded-full h-1">
+                <div className="bg-orange-500 h-1 rounded-full" style={{width: '65%'}}></div>
+              </div>
+              <div className="text-orange-400 text-xs mt-1">Sensibilité: Élevée</div>
+            </div>
+          </div>
+          
+          <div className="bg-slate-900 rounded p-4">
+            <div className="text-slate-300 text-sm font-medium mb-2">Temporalité</div>
+            <div className="text-slate-400 text-xs">Anomalies temporelles</div>
+            <div className="mt-2">
+              <div className="w-full bg-slate-700 rounded-full h-1">
+                <div className="bg-blue-500 h-1 rounded-full" style={{width: '40%'}}></div>
+              </div>
+              <div className="text-blue-400 text-xs mt-1">Détection: Active</div>
+            </div>
+          </div>
+          
+          <div className="bg-slate-900 rounded p-4">
+            <div className="text-slate-300 text-sm font-medium mb-2">Langage</div>
+            <div className="text-slate-400 text-xs">Analyse sémantique</div>
+            <div className="mt-2">
+              <div className="w-full bg-slate-700 rounded-full h-1">
+                <div className="bg-green-500 h-1 rounded-full" style={{width: '75%'}}></div>
+              </div>
+              <div className="text-green-400 text-xs mt-1">Précision: Optimale</div>
+            </div>
+          </div>
+          
+          <div className="bg-slate-900 rounded p-4">
+            <div className="text-slate-300 text-sm font-medium mb-2">Alignement</div>
+            <div className="text-slate-400 text-xs">Cohérence des données</div>
+            <div className="mt-2">
+              <div className="w-full bg-slate-700 rounded-full h-1">
+                <div className="bg-purple-500 h-1 rounded-full" style={{width: '55%'}}></div>
+              </div>
+              <div className="text-purple-400 text-xs mt-1">Analyse: Discrète</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

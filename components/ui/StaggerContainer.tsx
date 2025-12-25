@@ -2,7 +2,7 @@
 import { motion } from "framer-motion";
 import { ReactNode } from "react";
 
-export function StaggerContainer({ children }: { children: ReactNode }) {
+export default function StaggerContainer({ children }: { children: ReactNode }) {
   return (
     <motion.div
       initial="hidden"

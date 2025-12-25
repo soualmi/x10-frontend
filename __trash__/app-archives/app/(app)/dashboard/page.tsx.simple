@@ -1,0 +1,151 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { apiClient } from '@/lib/api';
+import type { ApiStats, ProductRaw } from '@/lib/api';
+
+export default function DashboardPage() {
+  const [stats, setStats] = useState<ApiStats | null>(null);
+  const [topProducts, setTopProducts] = useState<ProductRaw[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        setLoading(true);
+        setError(false);
+        const [statsData, productsData] = await Promise.all([
+          apiClient.getStats(),
+          apiClient.getProducts({ limit: 3, min_score: 55 }),
+        ]);
+        setStats(statsData);
+        setTopProducts(productsData);
+      } catch (err) {
+        console.error('Erreur fetch dashboard:', err);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <div className="p-6 text-white text-center">Chargement Oracle...</div>;
+  if (error || !stats) return <div className="p-6 text-red-400 text-center">Erreur Oracle</div>;
+
+  const marketStatus = getMarketStatus(stats);
+
+  return (
+    <div className="space-y-8 p-6 max-w-7xl mx-auto">
+      <div className="text-center space-y-3 mb-12">
+        <h1 className="text-3xl font-bold text-slate-50">
+          Lecture instantanee de l etat du marche
+        </h1>
+        <p className="text-lg text-slate-400">
+          Le dashboard Oracle n est pas un tableau de chiffres.
+          <br />
+          C est une lecture instantanee de l etat du marche.
+        </p>
+      </div>
+
+      <section className="space-y-6">
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold text-slate-50 mb-2">Ou en est le marche ?</h2>
+          <p className="text-slate-400">Vue d ensemble de la dynamique actuelle</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-slate-800 p-6 rounded border text-center">
+            <p className="text-sm text-slate-400 mb-2">Produits analyses</p>
+            <p className="text-3xl font-bold text-slate-50">{stats.total_products}</p>
+          </div>
+          <div className="bg-slate-800 p-6 rounded border text-center">
+            <p className="text-sm text-slate-400 mb-2">Fort potentiel</p>
+            <p className="text-3xl font-bold text-green-400">{stats.high_potential}</p>
+          </div>
+          <div className="bg-slate-800 p-6 rounded border text-center">
+            <p className="text-sm text-slate-400 mb-2">Score moyen</p>
+            <p className="text-3xl font-bold text-slate-50">{stats.avg_score.toFixed(1)}</p>
+          </div>
+          <div className="bg-slate-800 p-6 rounded border text-center">
+            <p className="text-sm text-slate-400 mb-2">En tendance</p>
+            <p className="text-3xl font-bold text-yellow-400">{stats.trending}</p>
+          </div>
+        </div>
+
+        <div className="bg-slate-800 p-6 rounded border">
+          <h3 className="text-lg font-semibold text-slate-50 mb-2">
+            {marketStatus.title}
+          </h3>
+          <p className="text-slate-400 leading-relaxed">
+            {marketStatus.description}
+          </p>
+        </div>
+      </section>
+
+      <section className="space-y-6">
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold text-slate-50 mb-2">Quelles opportunites emergent ?</h2>
+          <p className="text-slate-400">Produits detectes avant saturation</p>
+        </div>
+        <div className="bg-slate-800 p-8 rounded border text-center">
+          <span className="text-4xl mb-4 block">🔍</span>
+          <h3 className="text-lg font-semibold text-slate-50">Aucune opportunite chaude detectee</h3>
+          <p className="text-slate-400">Oracle surveille le marche en continu.</p>
+        </div>
+      </section>
+
+      <section className="space-y-6">
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold text-slate-50 mb-2">Que dois-je faire maintenant ?</h2>
+          <p className="text-slate-400">Actions recommandees</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-slate-800 p-6 rounded border hover:border-blue-500/50 cursor-pointer">
+            <a href="/opportunities" className="block space-y-3">
+              <div className="flex items-center gap-3">
+                <span className="text-xl">🎯</span>
+                <h3 className="text-lg font-semibold text-slate-50">Explorer les opportunites</h3>
+              </div>
+              <p className="text-slate-400 text-sm">Analyser les fenetres de decision</p>
+            </a>
+          </div>
+          <div className="bg-slate-800 p-6 rounded border hover:border-blue-500/50 cursor-pointer">
+            <a href="/products" className="block space-y-3">
+              <div className="flex items-center gap-3">
+                <span className="text-xl">🔍</span>
+                <h3 className="text-lg font-semibold text-slate-50">Rechercher des produits</h3>
+              </div>
+              <p className="text-slate-400 text-sm">Filtrer selon vos criteres</p>
+            </a>
+          </div>
+        </div>
+      </section>
+      <div className="text-center pt-8 pb-4 border-t border-slate-800">
+        <p className="text-sm text-slate-500 italic">
+          Oracle ne montre pas ce qui marche. Il montre ce qui va marcher.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function getMarketStatus(stats: ApiStats) {
+  const rate = stats.total_products > 0 ? (stats.high_potential / stats.total_products) * 100 : 0;
+  
+  if (stats.high_potential === 0) return { 
+    title: 'Marche en observation', 
+    description: 'Aucun signal prioritaire detecte actuellement.'
+  };
+  
+  if (rate >= 20) return { 
+    title: 'Dynamique favorable', 
+    description: 'Plusieurs opportunites emergent simultanement.'
+  };
+  
+  return { 
+    title: 'Opportunites selectives', 
+    description: 'Quelques signaux interessants detectes.'
+  };
+}

@@ -1,0 +1,51 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { apiClient } from '@/lib/api';
+import type { ApiStats, ProductRaw } from '@/lib/api';
+
+export default function DashboardPage() {
+  const [stats, setStats] = useState<ApiStats | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    apiClient.getStats().then(setStats).finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return <div className="p-6 text-white">Chargement Oracle...</div>;
+
+  return (
+    <div className="p-6 space-y-8 max-w-7xl mx-auto">
+      <div className="text-center space-y-3">
+        <h1 className="text-3xl font-bold text-white">Lecture instantanee de l etat du marche</h1>
+        <p className="text-slate-400">Le dashboard Oracle n est pas un tableau de chiffres.</p>
+      </div>
+
+      <div>
+        <h2 className="text-xl font-semibold text-white mb-4">Ou en est le marche ?</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div className="bg-slate-800 p-4 rounded border">
+            <p className="text-sm text-gray-400">Produits</p>
+            <p className="text-2xl font-bold text-white">{stats!.total_products}</p>
+          </div>
+          <div className="bg-slate-800 p-4 rounded border">
+            <p className="text-sm text-gray-400">Fort potentiel</p>
+            <p className="text-2xl font-bold text-green-400">{stats!.high_potential}</p>
+          </div>
+          <div className="bg-slate-800 p-4 rounded border">
+            <p className="text-sm text-gray-400">Score moyen</p>
+            <p className="text-2xl font-bold text-white">{stats!.avg_score.toFixed(1)}</p>
+          </div>
+          <div className="bg-slate-800 p-4 rounded border">
+            <p className="text-sm text-gray-400">Tendances</p>
+            <p className="text-2xl font-bold text-yellow-400">{stats!.trending}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-slate-800 p-6 rounded border text-center">
+        <p className="text-gray-300 italic">Oracle ne montre pas ce qui marche. Il montre ce qui va marcher.</p>
+      </div>
+    </div>
+  );
+}

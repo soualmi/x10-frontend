@@ -8,7 +8,7 @@ interface ButtonProps {
   className?: string;
 }
 
-export function Button({ children, variant = "default", size = "md", onClick, className = "" }: ButtonProps) {
+export default function Button({ children, variant = "default", size = "md", onClick, className = "" }: ButtonProps) {
   const baseStyles = "inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200";
   
   const variants = {

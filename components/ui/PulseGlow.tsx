@@ -8,7 +8,7 @@ interface PulseGlowProps {
   intensity?: "low" | "medium" | "high";
 }
 
-export function PulseGlow({ children, color = "rgba(212, 165, 116, 0.3)", intensity = "medium" }: PulseGlowProps) {
+export default function PulseGlow({ children, color = "rgba(212, 165, 116, 0.3)", intensity = "medium" }: PulseGlowProps) {
   return (
     <motion.div
       animate={{

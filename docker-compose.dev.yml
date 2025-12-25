@@ -1,0 +1,20 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - APIFY_TOKEN=${APIFY_TOKEN}
+      - NODE_ENV=development
+    networks:
+      - oracle-network
+
+networks:
+  oracle-network:
+    name: x10-frontend_oracle-network
