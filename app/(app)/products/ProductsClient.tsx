@@ -520,6 +520,38 @@ export default function ProductsClient() {
               </button>
             ))}
           </div>
+
+      {filteredProducts.length === 0 && (
+        <GlassCard className="p-6 mt-6">
+          <div className="text-sm font-semibold text-white">
+            Aucun produit ne correspond à ces critères
+          </div>
+          <div className="mt-1 text-sm text-white/60">
+            Ajuste la niche, l’objectif ou le budget pour élargir l’analyse.
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <button
+              onClick={() => {
+                setSearchQuery("");
+                setSelectedCategory("all");
+                setNiche("Toutes");
+                setGoal("Lancer maintenant");
+                setBudget("< 300 €");
+              }}
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white hover:bg-white/10"
+            >
+              Réinitialiser les filtres
+            </button>
+            <button
+              onClick={lancerAnalyse}
+              className="rounded-xl border border-white/10 bg-[#6D5EF6] px-4 py-2 text-sm font-medium text-white hover:bg-[#7E71FF]"
+            >
+              🔎 Relancer l’analyse
+            </button>
+          </div>
+        </GlassCard>
+      )}
+
         </div>
 
         <div className="rounded-2xl border border-white/10 bg-black/20 p-3 text-sm text-white/70">
