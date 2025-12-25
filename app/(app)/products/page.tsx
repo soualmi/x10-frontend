@@ -10,6 +10,15 @@ export default function ProductsPage() {
       title="Produits"
       subtitle="Base des produits scannés — Oracle Score en temps réel."
     >
+          <p className="text-xs text-muted-foreground mt-2">
+            <span className="block">
+              FR : Indice interne (demande / concurrence / saturation) — pas une promesse de revenus, ni un score financier.
+            </span>
+            <span className="block">
+              EN : Internal index (demand/competition/saturation) — not a financial score or promise of revenue.
+            </span>
+          </p>
+
       <ProductsClient />
     </OracleShell>
   );
