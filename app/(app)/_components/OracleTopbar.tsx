@@ -37,11 +37,7 @@ function DesktopNavItem({ href, label }: NavLink) {
   );
 }
 
-function MobileNavItem({
-  href,
-  label,
-  onSelect,
-}: NavLink & { onSelect: () => void }) {
+function MobileNavItem({ href, label, onSelect }: NavLink & { onSelect: () => void }) {
   const pathname = usePathname() || "/";
   const active = isActive(pathname, href);
 
@@ -73,18 +69,18 @@ export default function OracleTopbar() {
   const [open, setOpen] = useState(false);
   const [authed, setAuthed] = useState(false);
 
+  // Ordre “pilotage Oracle” : décider -> preuves -> produits -> opportunités
   const links: NavLink[] = useMemo(
     () => [
       { href: "/dashboard", label: "DASHBOARD" },
+      { href: "/signals", label: "PRODUCT SIGNALS" },
       { href: "/products", label: "PRODUITS" },
-      { href: "/opportunities", label: "OPPORTUNITÉS" },
-      { href: "/signals", label: "SIGNAUX" },
+      { href: "/opportunities", label: "PRODUCT OPPORTUNITIES" },
       { href: "/settings", label: "PARAMÈTRES" },
     ],
     []
   );
 
-  // Auth state
   useEffect(() => {
     try {
       setAuthed(!!localStorage.getItem("oracle_token"));
@@ -93,12 +89,10 @@ export default function OracleTopbar() {
     }
   }, []);
 
-  // Close menu on route change
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
 
-  // ESC to close
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") setOpen(false);
@@ -125,17 +119,11 @@ export default function OracleTopbar() {
         <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
           <Link href="/oracle" className="flex items-center gap-3">
             <div className="h-9 w-9 rounded-2xl border border-white/10 bg-white/[0.035] backdrop-blur-xl flex items-center justify-center">
-              <span className="text-[11px] tracking-[0.22em] text-white/80 font-semibold">
-                O
-              </span>
+              <span className="text-[11px] tracking-[0.22em] text-white/80 font-semibold">O</span>
             </div>
             <div>
-              <div className="text-[11px] tracking-[0.22em] text-white/45">
-                ORACLE
-              </div>
-              <div className="text-sm font-semibold text-white/85 -mt-0.5">
-                Intelligence
-              </div>
+              <div className="text-[11px] tracking-[0.22em] text-white/45">ORACLE</div>
+              <div className="text-sm font-semibold text-white/85 -mt-0.5">Intelligence</div>
             </div>
           </Link>
 
@@ -148,6 +136,14 @@ export default function OracleTopbar() {
 
           {/* Right actions */}
           <div className="flex items-center gap-2">
+            {/* CTA analyser (desktop) */}
+            <Link
+              href="/dashboard"
+              className="hidden md:inline-flex rounded-xl border border-white/10 bg-[#6D5EF6] px-4 py-2 text-[12px] tracking-[0.14em] font-semibold text-white shadow-[0_0_0_1px_rgba(109,94,246,0.2),0_10px_25px_rgba(109,94,246,0.18)] transition hover:bg-[#7E71FF]"
+            >
+              ANALYSER
+            </Link>
+
             {/* Mobile menu button */}
             <button
               type="button"
@@ -193,26 +189,28 @@ export default function OracleTopbar() {
           id="oracle-mobile-menu"
           className={[
             "md:hidden overflow-hidden transition-[max-height,opacity] duration-300 ease-in-out",
-            open ? "max-h-[520px] opacity-100" : "max-h-0 opacity-0",
+            open ? "max-h-[560px] opacity-100" : "max-h-0 opacity-0",
           ].join(" ")}
         >
           <div className="mx-auto max-w-6xl px-6 pb-5">
             <div className="mt-3 rounded-2xl border border-white/10 bg-white/[0.035] backdrop-blur-xl p-3">
+              {/* CTA analyser (mobile) */}
+              <Link
+                href="/dashboard"
+                onClick={() => setOpen(false)}
+                className="mb-2 inline-flex w-full items-center justify-center rounded-xl border border-white/10 bg-[#6D5EF6] px-4 py-3 text-[12px] tracking-[0.14em] font-semibold text-white hover:bg-[#7E71FF]"
+              >
+                ANALYSER
+              </Link>
+
               <div className="grid gap-2">
                 {links.map((l) => (
-                  <MobileNavItem
-                    key={l.href}
-                    href={l.href}
-                    label={l.label}
-                    onSelect={() => setOpen(false)}
-                  />
+                  <MobileNavItem key={l.href} href={l.href} label={l.label} onSelect={() => setOpen(false)} />
                 ))}
               </div>
 
               <div className="mt-3 pt-3 border-t border-white/10 flex items-center justify-between">
-                <span className="text-[11px] tracking-[0.18em] text-white/45">
-                  NAVIGATION
-                </span>
+                <span className="text-[11px] tracking-[0.18em] text-white/45">NAVIGATION</span>
                 <span className="text-xs text-white/35">oracle.x10commerce.com</span>
               </div>
             </div>
@@ -220,7 +218,6 @@ export default function OracleTopbar() {
         </div>
       </div>
 
-      {/* Backdrop (click to close) */}
       {open && (
         <div
           aria-hidden="true"
